@@ -1,16 +1,19 @@
 <?php
 
 require "core/load.php";
-require "templates/header.php";
 
 if (isset($_POST["0"])) {
-    $data = $handler->validate_submission($_POST);
-    $handler->store_submission($data);
-    unset ($_POST);
+  $data = $handler->validate_submission($_POST);
+  $handler->store_submission($data);
+  echo "<script>window.location.replace('/submit.php');</script>";
+  die();
 }
+
+require "templates/header.php";
 
 ?>
 <script>
+  
 if ( window.history.replaceState ) {
   window.history.replaceState( null, null, window.location.href );
 }

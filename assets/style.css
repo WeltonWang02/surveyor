@@ -138,11 +138,11 @@ button.question__next {
 @media (max-width: 500px){
     .question {
         max-width: 330px;
-        padding: 25px 0px;
+        padding: 50px 0px;
     }
     .question__choice{
         margin: 0;
-        margin-top:10px;
+        margin-top:10px; 
     }
     .question__answers{
         max-width: 2900px;
