@@ -51,7 +51,11 @@ class Handler {
 
         // update question counts
         foreach ($data as $question_id => $answer_id) {
-            $question = $this->db->query("UPDATE questions SET current_responses = current_responses + 1 WHERE id = $question_id");
+            $curr_q = $this->db->query("SELECT * FROM questions WHERE id = $question_id");
+            $counter = json_decode($curr_q[0]['current_responses'], true);
+            $counter[$group] += 1;
+            $counter = json_encode($counter);
+            $this->db->query("UPDATE questions SET current_responses = '$counter' WHERE id = $question_id");
         }
     }
         
@@ -62,7 +66,7 @@ class Handler {
      * @return mixed
      */
     public function get_questions(int $rand){
-        return $this->db->query("SELECT * FROM questions where current_responses < target_responses and randomize = $rand");
+        return $this->db->query("SELECT * FROM questions where randomize = $rand");
     }
     
     /**
@@ -101,10 +105,11 @@ class Handler {
     
     /**
      * Filter out the questions so there's only one of each. Random assignment.
-     *
+     * 
+     * @param  mixed $grp    Group number to counter for
      * @return array
      */
-    public function process_questions(){
+    public function process_questions($grp){
         global $exists; //funky scoping
         $groups = [];
         $selected = [];
@@ -114,7 +119,10 @@ class Handler {
         shuffle($questions);
 
         foreach ($questions as $question){
-            $groups[$question["group"]][] = $question;
+            $qc = json_decode($question['current_responses'], true)[$grp];
+            if ($qc < $question['max_responses'] || empty($qc)){
+                $groups[$question["group"]][] = $question;
+            }
         }
 
         function filter_used($array){
