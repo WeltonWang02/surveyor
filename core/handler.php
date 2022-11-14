@@ -120,7 +120,7 @@ class Handler {
 
         foreach ($questions as $question){
             $qc = json_decode($question['current_responses'], true)[$grp];
-            if ($qc < $question['max_responses'] || empty($qc)){
+            if ($qc < $question['target_responses'] || empty($qc)){
                 $groups[$question["group"]][] = $question;
             }
         }
